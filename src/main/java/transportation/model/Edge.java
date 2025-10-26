@@ -1,0 +1,48 @@
+package transportation.model;
+
+import java.util.Objects;
+
+public class Edge implements Comparable<Edge> {
+    private final String from;
+    private final String to;
+    private final double weight;
+
+    public Edge(String from, String to, double weight) {
+        if (from == null || to == null) throw new IllegalArgumentException("Edge endpoints cannot be null");
+        this.from = from;
+        this.to = to;
+        this.weight = weight;
+    }
+
+    public String getFrom() { return from; }
+    public String getTo() { return to; }
+    public double getWeight() { return weight; }
+
+    // Undirected equality
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Edge)) return false;
+        Edge edge = (Edge) o;
+        boolean sameDir = Objects.equals(from, edge.from) && Objects.equals(to, edge.to);
+        boolean oppDir = Objects.equals(from, edge.to) && Objects.equals(to, edge.from);
+        return Double.compare(edge.weight, weight) == 0 && (sameDir || oppDir);
+    }
+
+    @Override
+    public int hashCode() {
+        String a = from.compareTo(to) <= 0 ? from : to;
+        String b = from.compareTo(to) <= 0 ? to : from;
+        return Objects.hash(a, b, weight);
+    }
+
+    @Override
+    public int compareTo(Edge other) {
+        return Double.compare(this.weight, other.weight);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s-%s(%.3f)", from, to, weight);
+    }
+}
